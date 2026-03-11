@@ -1,15 +1,18 @@
 
 //arrays for sensor reads and history tracking
+#include <DHT.h>
 char analogPinIn[]={A0,A1,A2,A3};
 int sensorInVal[]={0,0,0,0};
 int sensorHistory[4][10]={0};
 bool hOutHistory[10];
+FILE *file;
 
 //values for PID reads and writes
 double avgSensorVal = 0;
 
 void setup() 
 {
+  file = fopen("history.csv", rw);
 //humidity sensor setup 
   for(int i=0;i<=3;i++)
     {
@@ -47,8 +50,8 @@ void loop()
 
   //start of history updates section
   
-//HOutHistory = HumidOnHistory(HOutHistory, 10, #);
-//sensorHistory = SensorHistory(sensorHistory,10,4,sensorInVal[] )
+HOutHistory = HumidOnHistory(HOutHistory, 10, #);
+sensorHistory = SensorHistory(sensorHistory,10,4,sensorInVal[] );
 
   //set outputs for cycle
 
