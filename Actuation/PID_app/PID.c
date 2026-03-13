@@ -74,7 +74,7 @@ int main() {
         double humidity = readHumiditySensor();
         double controlSignal = PID_Compute(&pid, setpoint, humidity, dt);
 
-        printf("Time %2d | Humidity: %.2f%% | Control: %.2f\n", i + 1, humidity, controlSignal);
+       // printf("Time %2d | Humidity: %.2f%% | Control: %.2f\n", i + 1, humidity, controlSignal);
         controlHumidifier(controlSignal);
 
         // Simulate wait for next cycle

@@ -1,17 +1,26 @@
+/*
+This code is a main sketch for local operations on the ardiuno uno q with sensor inputs and outputs
+there is a digital PID and kalman filter to assist in updates and calculations as well
+all outputs will be stored in a .csv file that will communicate with the UI which will grab the values
+*/
+
 
 //arrays for sensor reads and history tracking
 #include <DHT.h>
+#include "function.h"
+//changes to Pi platform will change everything here
 char analogPinIn[]={A0,A1,A2,A3};
 int sensorInVal[]={0,0,0,0};
 int sensorHistory[4][10]={0};
 bool hOutHistory[10];
-FILE *file;
+FILE *file *filerw;
 
 //values for PID reads and writes
 double avgSensorVal = 0;
 
 void setup() 
 {
+  file = fopen("history.csv", w);
   file = fopen("history.csv", rw);
 //humidity sensor setup 
   for(int i=0;i<=3;i++)
@@ -25,9 +34,6 @@ void setup()
 //Humidity sensor pin setup
   pinMode (A4, OUTPUT);
 
-
-  //set up serial communication for MATLAB
-  serial.begin(9600);
 
   
 }
@@ -50,8 +56,20 @@ void loop()
 
   //start of history updates section
   
-HOutHistory = HumidOnHistory(HOutHistory, 10, #);
+HOutHistory = HumidOnHistory(HOutHistory, 10,hOuthistory[] );
 sensorHistory = SensorHistory(sensorHistory,10,4,sensorInVal[] );
+
+
+for(int i=0;i<10, i++)
+{
+  fprintf(file, "\n humid on?: %d, sensor vals: ", hOutHitsory[i]);
+  fclose();
+  for (int j=0;j<4;j++)
+  {
+    fprintf(filerw, "%d ", sensorHistory[i][j]);
+    fclose();
+  }
+}
 
   //set outputs for cycle
 
@@ -60,13 +78,9 @@ sensorHistory = SensorHistory(sensorHistory,10,4,sensorInVal[] );
 
 
 
-  // Kalman filter deploys info to MATLAB via serial com and reads info back
+  // Kalman filter 
 
-//serial.println(#whatever needs passed);
-  /*
-  may need to give direct sensor readings or deploy to hardware from matlab to ARM instead of through serial port
-  */
-//serial.read
+
   
 
   //tv app. to be inserted if time constraints allow
