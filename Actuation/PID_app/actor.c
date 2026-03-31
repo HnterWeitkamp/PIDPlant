@@ -20,7 +20,7 @@ typedef struct {
 
 
 //changes to Pi platform will change everything here
-char analogPinIn[]={A0,A1,A2,A3};
+
 int sensorInVal[]={0,0,0,0};
 int sensorHistory[4][10]={0};
 bool hOutHistory[10];
@@ -31,6 +31,16 @@ double avgSensorVal = 0;
 
   file = fopen("history.csv", w);
   filer = fopen("history.csv", rw);
+
+
+  int main (void)
+  {
+
+//setup
+wiringpigpio();
+char PinIn[]={0,1,2,3};
+
+
 
 while()
 {
@@ -93,4 +103,6 @@ for(int i=0;i<10, i++)
  // Simulate wait for next cycle
         struct timespec ts = { (time_t)dt, 0 };
         nanosleep(&ts, NULL);
+}
+return 0;
 }
