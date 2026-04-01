@@ -1,6 +1,7 @@
 #ifndef FILES
 #define FILES
 
+
 // PID structure
 typedef struct {
     double Kp;       // Proportional gain
@@ -45,10 +46,6 @@ bool * HumidOnHistory(bool *state[], int count, bool *curState)
     return *state;
 }
 
-void waitUntil()
-{
-
-}
 
 // Initialize PID
 void PID_Init(PID_Controller *pid, double Kp, double Ki, double Kd, double outMin, double outMax) {
@@ -85,17 +82,18 @@ double PID_Compute(PID_Controller *pid, double setpoint, double measured, double
 }
 
 // Simulated humidity sensor (replace with real sensor read)
-double readHumiditySensor() {
+double readHumiditySensor(double array[]) {
     // In real application, replace with actual sensor reading
-    static double humidity = 45.0;
-    humidity += ((rand() % 100) / 100.0 - 0.5); // simulate noise
-    return humidity;
+    double humidity = 45.0;
+    for(int i=0;i<=3;i++)
+    {
+      humidity += (double) array[i];
+
+    }
+   // humidity += ((rand() % 100) / 100.0 - 0.5); // simulate noise
+    return humidity/4;
 }
 
-// Simulated actuator control (replace with real hardware control)
-void controlHumidifier(double controlSignal) {
-    printf("Actuator control signal: %.2f\n", controlSignal);
-}
 
 #endif
 

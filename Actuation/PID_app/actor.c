@@ -66,7 +66,8 @@ double avgSensorVal = 0;
 
 //setup
 wiringPiSetupGpio();
-
+double humidity;
+double controlSignal;
 
 
 while()
@@ -84,13 +85,11 @@ while()
 
  
 
-   /* for (int i = 0; i < 30; i++) { // Simulate 30 control cycles
-        double humidity = readHumiditySensor();
-        double controlSignal = PID_Compute(&pid, setpoint, humidity, dt);
+
+         humidity = readHumiditySensor(sensorInVal);
+         controlSignal = PID_Compute(&pid, setpoint, humidity, dt);
         
-    }*/
-        printf("Time %2d | Humidity: %.2f%% | Control: %.2f\n", i + 1, humidity, controlSignal);
-                controlHumidifier(controlSignal);
+  
 
   //start of history updates section
   
@@ -101,17 +100,17 @@ sensorHistory = SensorHistory(sensorHistory,10,4,sensorInVal[] );
 for(int i=0;i<10, i++)
 {
   fprintf(file, "\n humid on?: %d, sensor vals: ", hOutHitsory[i]);
-  fclose();
+  fclose(file);
   for (int j=0;j<4;j++)
   {
     fprintf(filer, "%d ", sensorHistory[i][j]);
-    fclose();
+    fclose(filer);
   }
 }
 
   //set outputs for cycle
 
-  if()
+  if(controlSignal<=.5)
   {
     digitalWrite(humo, HIGH);
 
