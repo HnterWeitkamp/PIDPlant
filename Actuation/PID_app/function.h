@@ -1,6 +1,9 @@
 #ifndef FILES
 #define FILES
-
+#include <wiringPi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 // PID structure
 typedef struct {
@@ -93,6 +96,7 @@ double readHumiditySensor(double array[]) {
    // humidity += ((rand() % 100) / 100.0 - 0.5); // simulate noise
     return humidity/4;
 }
+
 
 
 #endif

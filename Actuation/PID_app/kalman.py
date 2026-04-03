@@ -28,7 +28,7 @@ for k in range(N):
     x_est, P = update(x_pred, P_pred, z[k])
     estimates.append(x_est[0,0])
 
-# plt.plot(estimates, label='Estimated State')
+#plt.plot(estimates, label='Estimated State')
 #plt.plot(true_states, label='True State', alpha=0.5)
 #plt.legend(); plt.xlabel('Time'); plt.ylabel('State')
 #plt.show()

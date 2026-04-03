@@ -84,18 +84,5 @@ int main() {
 
     return 0;
 }
-/*How It Works
-PID Structure stores gains, previous error, and integral term.
-PID_Compute calculates:
-Proportional: Immediate reaction to error.
-Integral: Accumulates past errors (with anti-windup).
-Derivative: Predicts future error change.
-Output Clamping ensures actuator limits are respected.
-Simulation uses a fake humidity sensor and actuator for demonstration.
-Adapting for Real Hardware
-Replace readHumiditySensor() with actual sensor code (e.g., I2C/SPI/DHT library).
-Replace controlHumidifier() with GPIO/PWM control for your humidifier or dehumidifier.
-Adjust Kp, Ki, Kd for your system’s response (PID tuning).
-If you want, I can give you a version optimized for STM32 HAL so it runs directly on a microcontroller with real humidity sensors.
-Do you want me to prepare that embedded-ready version?*/
+
 

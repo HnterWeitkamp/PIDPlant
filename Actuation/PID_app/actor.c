@@ -5,6 +5,7 @@
 #include <DHT.h>
 #include <Python.h>
 #include <wiringPi.h>
+#include <stdint.h>
 #include "function.h"
 //pin definitions
 #define sens1 1
@@ -26,25 +27,58 @@ typedef struct {
 } PID_Controller;
 
 
+int read_dht22(int pin) {
+    uint8_t lastState = HIGH;
+    uint8_t counter = 0;
+    uint8_t j = 0, i;
+
+    data[0] = data[1] = data[2] = data[3] = data[4] = 0;
+
+    // Send start signal
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+    delay(18); // 18 ms low
+    digitalWrite(pin, HIGH);
+    delayMicroseconds(40);
+    pinMode(pin, INPUT);
+
+    // Read the data
+    for (i = 0; i < MAX_TIMINGS; i++) {
+        counter = 0;
+        while (digitalRead(pin) == lastState) {
+            counter++;
+            delayMicroseconds(1);
+            if (counter == 255) break;
+        }
+        lastState = digitalRead(pin);
+
+        if (counter == 255) break;
+
+        // Ignore first 3 transitions
+        if ((i >= 4) && (i % 2 == 0)) {
+            data[j / 8] <<= 1;
+            if (counter > 50) data[j / 8] |= 1;
+            j++;
+        }
+    }
+
+    // Verify checksum
+    if ((j >= 40) &&
+        (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))) {
+        return 1; // Success
+    }
+    return 0; // Failure
+}
 
 
 //changes to Pi platform will change everything here
 
-int sensor[]={sens1,sens2,sens3,sens4};
-int sensorinVal[]={0, 0, 0, 0};
-int sensorHistory[4][10]={0};
-bool hOutHistory[10];
-
-pinMode(sens1, INPUT);
-pinMode(sens2, INPUT);
-pinMode(sens3, INPUT);
-pinMode(sens4, INPUT);
-
-pinMode(humo, OUTPUT);
-pinMode(fanpwm,OUTPUT);
 
 
-FILE *file *filerw;
+
+
+
+FILE *file *filer;
 
    srand((unsigned)time(NULL));
 
@@ -68,23 +102,39 @@ double avgSensorVal = 0;
 wiringPiSetupGpio();
 double humidity;
 double controlSignal;
+double temprature;
+pinMode(sens1, INPUT);
+pinMode(sens2, INPUT);
+pinMode(sens3, INPUT);
+pinMode(sens4, INPUT);
 
+pinMode(humo, OUTPUT);
+pinMode(fanpwm,OUTPUT);
 
+int sensor[]={sens1,sens2,sens3,sens4};
+double sensorinVal[]={0, 0, 0, 0};
+int sensorHistory[4][10]={0};
+int hOutHistory[10];
+double data[5] = {0, 0, 0, 0, 0};
 while()
 {
       //reads analog sensor inputs
   for(int i=0;i<=3;i++)
     {
       sensorInVal[i] = digitalRead(sensor[i]);
-      avgSensorVal += (double) sensorInVal[i];
+      avgSensorVal +=  sensorInVal[i];
+    
+
+  read_dht22(sensorInVal[i]);
+             humidity = data[0] * 256 + data[1];
+            humidity /= 10;
+             temperature = (data[2] & 0x7F) * 256 + data[3];
+            temperature /= 10.0;
+
     }
   
   avgSensorVal /= 4;
   // start of PID section
-
-
- 
-
 
          humidity = readHumiditySensor(sensorInVal);
          controlSignal = PID_Compute(&pid, setpoint, humidity, dt);
@@ -99,7 +149,7 @@ sensorHistory = SensorHistory(sensorHistory,10,4,sensorInVal[] );
 
 for(int i=0;i<10, i++)
 {
-  fprintf(file, "\n humid on?: %d, sensor vals: ", hOutHitsory[i]);
+  fprintf(file, "\n humid on?: %d, sensor vals: %f", hOutHitsory[i], sensorHistory[i]);
   fclose(file);
   for (int j=0;j<4;j++)
   {
