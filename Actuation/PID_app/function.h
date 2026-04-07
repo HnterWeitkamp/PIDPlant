@@ -39,14 +39,14 @@ return *val;
 
 }
 //return new updated history array
-bool * HumidOnHistory(bool *state[], int count, bool *curState)
+int * HumidOnHistory(bool *state[], int count, int *curState)
 {
     for(int i=1;i<=count;i++)
     {
         state[i-1]= state[i];
     }
     state[count]=curState;
-    return *state;
+    return state;
 }
 
 

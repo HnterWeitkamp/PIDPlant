@@ -6,6 +6,7 @@
 #include <Python.h>
 #include <wiringPi.h>
 #include <stdint.h>
+#include <softPwm.h>
 #include "function.h"
 //pin definitions
 #define sens1 1
@@ -71,7 +72,7 @@ int read_dht22(int pin) {
 }
 
 
-//changes to Pi platform will change everything here
+//changes to Pi platform will change everything
 
 
 
@@ -80,7 +81,9 @@ int read_dht22(int pin) {
 
 FILE *file *filer;
 
-   srand((unsigned)time(NULL));
+   int main (void)
+  { 
+    srand((unsigned)time(NULL));
 
     PID_Controller pid;
     PID_Init(&pid, 2.0, 0.5, 1.0, -100.0, 100.0); // Tune gains for your system
@@ -95,8 +98,7 @@ double avgSensorVal = 0;
   filer = fopen("history.csv", rw);
 
 
-  int main (void)
-  {
+ 
 
 //setup
 wiringPiSetupGpio();
@@ -110,6 +112,7 @@ pinMode(sens4, INPUT);
 
 pinMode(humo, OUTPUT);
 pinMode(fanpwm,OUTPUT);
+softPwmCreate(fanpwm, 1000);
 
 int sensor[]={sens1,sens2,sens3,sens4};
 double sensorinVal[]={0, 0, 0, 0};
@@ -160,18 +163,22 @@ for(int i=0;i<10, i++)
 
   //set outputs for cycle
 
-  if(controlSignal<=.5)
+  if(controlSignal)
   {
     digitalWrite(humo, HIGH);
 
     digitalWrite(fanpwm, HIGH);
 
-    sleep(5);
+    delay(5);
     digitalWrite(humo,LOW);
 
   }
   else
-  digitalWrite(humo,LOW);
+  {
+    softPwmWrite(fanpwm, 500);
+    delay(10);
+    softPwmWrite(fanpwm, 0);
+  }
 
 
 
